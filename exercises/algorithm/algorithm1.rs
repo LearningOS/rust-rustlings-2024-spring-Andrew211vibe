@@ -29,13 +29,13 @@ struct LinkedList<T> {
     end: Option<NonNull<Node<T>>>,
 }
 
-impl<T> Default for LinkedList<T> {
+impl<T: std::cmp::PartialOrd + Clone> Default for LinkedList<T> {
     fn default() -> Self {
         Self::new()
     }
 }
 
-impl<T> LinkedList<T> {
+impl<T: std::cmp::PartialOrd + Clone> LinkedList<T> {
     pub fn new() -> Self {
         Self {
             length: 0,
@@ -71,12 +71,33 @@ impl<T> LinkedList<T> {
     }
 	pub fn merge(list_a:LinkedList<T>,list_b:LinkedList<T>) -> Self
 	{
-		//TODO
-		Self {
-            length: 0,
-            start: None,
-            end: None,
+        let mut res_list = LinkedList::<T>::new();
+        let mut head_a = list_a.start;
+        let mut head_b = list_b.start;
+	    while let (Some(ptr_a), Some(ptr_b)) = (head_a, head_b) {
+            unsafe {
+                if ptr_a.as_ref().val <= ptr_b.as_ref().val {
+                    res_list.add(ptr_a.as_ref().val.clone());
+                    head_a = (*ptr_a.as_ptr()).next;
+                } else {
+                    res_list.add(ptr_b.as_ref().val.clone());
+                    head_b = (*ptr_b.as_ptr()).next;
+                }
+            }
         }
+        while let (Some(ptr_a), None) = (head_a, head_b) {
+            unsafe {
+                res_list.add(ptr_a.as_ref().val.clone());
+                head_a = (*ptr_a.as_ptr()).next;
+            }
+        }
+        while let (None, Some(ptr_b)) = (head_a, head_b) {
+            unsafe {
+                res_list.add(ptr_b.as_ref().val.clone());
+                head_b = (*ptr_b.as_ptr()).next;
+            }
+        }
+        res_list
 	}
 }
 
