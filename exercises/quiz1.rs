@@ -13,10 +13,18 @@
 //
 // No hints this time ;)
 
-// I AM NOT DONE
+
 
 // Put your function here!
-// fn calculate_price_of_apples {
+const LESS_THAN_40: u32 = 2;
+const MORE_THAN_40: u32 = 1;
+fn calculate_price_of_apples(num: u32) -> u32 {
+    if num > 40 {
+        num * MORE_THAN_40
+    } else {
+        num * LESS_THAN_40
+    }
+}
 
 // Don't modify this function!
 #[test]
