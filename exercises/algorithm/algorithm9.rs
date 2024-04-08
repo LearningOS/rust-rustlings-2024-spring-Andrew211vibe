@@ -2,7 +2,7 @@
 	heap
 	This question requires you to implement a binary heap function
 */
-// I AM NOT DONE
+
 
 use std::cmp::Ord;
 use std::default::Default;
@@ -37,7 +37,18 @@ where
     }
 
     pub fn add(&mut self, value: T) {
-        //TODO
+        self.count += 1;
+        self.items.push(value); // 元素加入堆底
+
+        let mut idx = self.count; // 从底部开始
+        while self.parent_idx(idx) > 0 { // 若存在父节点（不为0）
+            let p_idx = self.parent_idx(idx);
+            // 则向上堆处理（根据处理<或>区分大根或小根堆）
+            if (self.comparator)(&self.items[idx], &self.items[p_idx]) {
+                self.items.swap(idx, p_idx);
+            }
+            idx = p_idx; // 往上一层
+        }
     }
 
     fn parent_idx(&self, idx: usize) -> usize {
@@ -57,8 +68,17 @@ where
     }
 
     fn smallest_child_idx(&self, idx: usize) -> usize {
-        //TODO
-		0
+        if self.right_child_idx(idx) > self.count { // 右孩子不存在
+            self.left_child_idx(idx) // 左孩子直接返回
+        } else { // 否则比较左右孩子选值最小的一个
+            let l_idx = self.left_child_idx(idx);
+            let r_idx = self.right_child_idx(idx);
+            if (self.comparator)(&self.items[l_idx], &self.items[r_idx]) {
+                l_idx
+            } else {
+                r_idx
+            }
+        }
     }
 }
 
@@ -84,8 +104,24 @@ where
     type Item = T;
 
     fn next(&mut self) -> Option<T> {
-        //TODO
-		None
+        if self.count == 0 { // 堆为空
+            return None;
+        }
+        // 否则弹出堆顶元素（swap_remove用最后一个填充）
+        let next = Some(self.items.swap_remove(1));
+        self.count -= 1;
+        // 向下堆处理
+        if self.count > 0 {
+            let mut idx = 1;
+            while self.children_present(idx) {
+                let c_idx = self.smallest_child_idx(idx);
+                if !(self.comparator)(&self.items[idx], &self.items[c_idx]) {
+                    self.items.swap(idx, c_idx);
+                }
+                idx = c_idx;
+            }
+        }
+        next
     }
 }
 
