@@ -5,8 +5,33 @@
 */
 // I AM NOT DONE
 
-fn sort<T>(array: &mut [T]){
-	//TODO
+fn partition<T: PartialOrd>(arr: &mut [T], lo: usize, hi: usize) -> usize {
+    let (mut l, mut r) = (lo, hi);
+    let pivot = lo;
+
+    while l < r {
+        while l < r && arr[r] >= arr[pivot] { r -= 1; }
+        while l < r && arr[l] <= arr[pivot] { l += 1; }
+        if l < r { arr.swap(l, r); }
+    }
+    arr.swap(pivot, l);
+    l
+}
+
+fn quick_sort<T: PartialOrd>(arr: &mut [T], lo: usize, hi: usize) {
+    if lo < hi {
+        let pivot = partition(arr, lo, hi);
+        if pivot != 0 {
+            quick_sort(arr, lo, pivot - 1);
+        }
+        quick_sort(arr, pivot + 1, hi);
+    }
+}
+
+fn sort<T: PartialOrd>(array: &mut [T]){
+	if array.len() > 1 {
+        quick_sort(array, 0, array.len() - 1);
+    }
 }
 #[cfg(test)]
 mod tests {
