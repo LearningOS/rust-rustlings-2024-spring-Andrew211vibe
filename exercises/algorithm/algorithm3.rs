@@ -3,7 +3,7 @@
 	This problem requires you to implement a sorting algorithm
 	you can use bubble sorting, insertion sorting, heap sorting, etc.
 */
-// I AM NOT DONE
+
 
 fn partition<T: PartialOrd>(arr: &mut [T], lo: usize, hi: usize) -> usize {
     let (mut l, mut r) = (lo, hi);
